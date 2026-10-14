@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+<meta name="theme-color" content="#080b16">
+<meta name="application-name" content="WIN ENCRYPTION VIP">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="WIN VIP">
+<title>WIN ENCRYPTION VIP</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%237c6cf0'/%3E%3Cpath d='M8 12V9a4 4 0 0 1 8 0v3m-9 0h10a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1z' fill='none' stroke='white' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#080b16;--bg-2:#0c1022;
+  --card:rgba(20,25,50,.72);--card-solid:#141932;--card-2:#1c2345;
+  --input:#0d1124;
+  --border:rgba(150,170,255,.14);--border-2:rgba(150,170,255,.35);
+  --text:#f0f3ff;--text-2:#b2bade;--muted:#6b749a;--muted-2:#4d547a;
+  --a1:#ff6b9d;--a2:#c471ed;--a3:#7c6cf0;--a4:#22d3ee;--a5:#f59e0b;
+  --success:#10b981;--danger:#f43f5e;
+  --shadow:0 12px 40px rgba(0,0,0,.5);
+  --glow:0 0 50px rgba(196,113,237,.25);
+  --r:14px;--r-md:18px;--r-lg:24px;--r-full:9999px;
+  --t:.24s cubic-bezier(.4,0,.2,1);
+  --spring:.5s cubic-bezier(.34,1.56,.64,1);
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Segoe UI',system-ui,Tahoma,sans-serif;
+  background:#080b16;color:var(--text);min-height:100vh;line-height:1.6;
+  -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;
+  overflow-x:hidden;position:relative;
+  padding-top:env(safe-area-inset-top);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(ellipse 55% 45% at 15% 8%,rgba(196,113,237,.22),transparent 60%),
+    radial-gradient(ellipse 50% 50% at 88% 20%,rgba(255,107,157,.16),transparent 60%),
+    radial-gradient(ellipse 60% 50% at 50% 100%,rgba(34,211,238,.14),transparent 60%),
+    linear-gradient(180deg,#080b16,#0c1022);
+}
+body::after{
+  content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:
+    radial-gradient(circle at 25% 30%,rgba(255,255,255,.04) 1px,transparent 1px),
+    radial-gradient(circle at 75% 70%,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:60px 60px,90px 90px;opacity:.5;
+}
+@keyframes rgbFlow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.rgb-text{
+  background:linear-gradient(90deg,#ff6b9d,#c471ed,#7c6cf0,#22d3ee,#f59e0b,#ff6b9d);
+  background-size:300% 100%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:rgbFlow 8s linear infinite;
+}
+
+/* ============ INSTALL BAR ============ */
+.install-bar{
+  display:none;position:fixed;bottom:16px;left:16px;right:16px;z-index:9998;
+  background:linear-gradient(135deg,rgba(255,107,157,.95),rgba(196,113,237,.95));
+  padding:14px 18px;border-radius:18px;
+  box-shadow:0 16px 40px rgba(196,113,237,.5);
+  align-items:center;gap:12px;color:#fff;font-weight:700;
+  animation:slideUp .5s var(--spring) both;
+}
+.install-bar.show{display:flex}
+@keyframes slideUp{from{transform:translateY(120px);opacity:0}to{transform:none;opacity:1}}
+.install-bar .ib-icon{width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.install-bar .ib-icon svg{width:22px;height:22px}
+.install-bar .ib-body{flex:1;min-width:0;font-size:13px;line-height:1.4}
+.install-bar .ib-title{font-weight:800;font-size:14px}
+.install-bar .ib-desc{font-size:11.5px;opacity:.85;font-weight:500}
+.install-bar button{background:#fff;color:#7c6cf0;border:none;padding:10px 16px;border-radius:12px;font-weight:800;font-size:12px;cursor:pointer;font-family:inherit}
+.install-bar .ib-close{background:transparent;color:#fff;padding:6px;font-size:18px;line-height:1}
+
+/* ============ GATE ============ */
+.gate{position:fixed;inset:0;z-index:100000;background:radial-gradient(ellipse at center,#121832 0%,#080b16 100%);display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+.gate.hide{opacity:0;pointer-events:none;transition:opacity .6s ease}
+.gate-card{
+  background:var(--card);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid var(--border);border-radius:28px;padding:40px 30px;
+  max-width:540px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,.6),var(--glow);
+  text-align:center;position:relative;overflow:hidden;
+  animation:gateIn .7s var(--spring) both;
+}
+.gate-card::before{
+  content:'';position:absolute;inset:-2px;border-radius:28px;padding:2px;
+  background:linear-gradient(120deg,#ff6b9d,#c471ed,#22d3ee,#f59e0b,#ff6b9d);
+  background-size:400% 400%;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  animation:rgbFlow 6s linear infinite;pointer-events:none;opacity:.7;
+}
+@keyframes gateIn{from{opacity:0;transform:translateY(30px) scale(.92)}to{opacity:1;transform:none}}
+.gate-icon{width:88px;height:88px;margin:0 auto 22px;border-radius:26px;background:linear-gradient(135deg,#ff6b9d,#c471ed,#7c6cf0);background-size:200% 200%;animation:rgbFlow 4s linear infinite;display:flex;align-items:center;justify-content:center;font-size:44px;color:#fff;box-shadow:0 20px 50px rgba(196,113,237,.5);position:relative;z-index:2}
+.gate h1{font-size:clamp(22px,5vw,28px);font-weight:900;margin-bottom:10px;letter-spacing:-.02em;position:relative;z-index:2}
+.gate-sub{color:var(--text-2);font-size:14px;margin-bottom:26px;position:relative;z-index:2}
+.gate-steps{display:flex;flex-direction:column;gap:12px;margin-bottom:22px;text-align:right;position:relative;z-index:2}
+.gate-step{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:18px;background:rgba(13,17,36,.9);border:1.5px solid var(--border);text-decoration:none;color:var(--text);transition:var(--t);cursor:pointer;position:relative;overflow:hidden}
+.gate-step::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent);transform:translateX(-100%);transition:transform .8s}
+.gate-step:hover::before{transform:translateX(100%)}
+.gate-step:hover{border-color:var(--border-2);transform:translateX(-4px)}
+.gate-step.done{border-color:rgba(16,185,129,.5);background:rgba(16,185,129,.08)}
+.step-num{width:36px;height:36px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,rgba(255,107,157,.2),rgba(196,113,237,.2));color:#f0c4ff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;border:1.5px solid rgba(196,113,237,.3)}
+.gate-step.done .step-num{background:rgba(16,185,129,.2);color:#34d399;border-color:rgba(16,185,129,.4)}
+.step-body{flex:1;min-width:0}
+.step-title{font-weight:700;font-size:15px;margin-bottom:3px}
+.step-desc{font-size:12px;color:var(--muted)}
+.step-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;position:relative;z-index:2}
+.step-icon.yt{background:linear-gradient(135deg,#ff0000,#cc0000);box-shadow:0 6px 18px rgba(255,0,0,.4)}
+.step-icon.tg{background:linear-gradient(135deg,#0088cc,#00c8ff);box-shadow:0 6px 18px rgba(0,136,204,.4)}
+.step-icon svg{width:22px;height:22px}
+.gate-btn{width:100%;padding:16px;border:none;border-radius:var(--r-full);font-weight:800;font-size:16px;cursor:pointer;transition:var(--t);background:linear-gradient(135deg,#ff6b9d,#c471ed,#7c6cf0);background-size:200% 200%;animation:rgbFlow 5s linear infinite;color:#fff;box-shadow:0 10px 30px rgba(196,113,237,.45);opacity:.35;pointer-events:none;position:relative;z-index:2;font-family:inherit}
+.gate-btn.active{opacity:1;pointer-events:auto}
+.gate-btn.active:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 16px 40px rgba(196,113,237,.6)}
+.gate-note{font-size:11.5px;color:var(--muted-2);margin-top:16px;position:relative;z-index:2}
+
+/* ============ HEADER ============ */
+.header{text-align:center;padding:60px 20px 44px;position:relative;overflow:hidden}
+.header::after{content:'';position:absolute;bottom:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,rgba(196,113,237,.6),rgba(34,211,238,.6),transparent)}
+.logo-main{font-size:clamp(30px,7vw,52px);font-weight:900;letter-spacing:-.03em;display:inline-block;margin-bottom:12px;line-height:1.1;filter:drop-shadow(0 0 30px rgba(196,113,237,.5))}
+.tagline{font-size:16px;color:var(--text-2);margin-bottom:26px}
+.stats{display:flex;justify-content:center;gap:38px;margin-bottom:28px;flex-wrap:wrap}
+.stat-item{text-align:center}
+.stat-num{font-size:30px;font-weight:900;line-height:1.1;margin-bottom:4px}
+.stat-lbl{font-size:12px;color:var(--muted);letter-spacing:.05em}
+.social-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:6px}
+.social-btn{display:inline-flex;align-items:center;gap:10px;padding:13px 26px;border-radius:var(--r-full);text-decoration:none;font-weight:700;font-size:14px;color:#fff;transition:transform var(--spring),box-shadow var(--t);position:relative;overflow:hidden}
+.social-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);transform:translateX(-100%);transition:transform .7s}
+.social-btn:hover::before{transform:translateX(100%)}
+.social-btn.tg{background:linear-gradient(135deg,#0088cc,#00c8ff);box-shadow:0 8px 24px rgba(0,136,204,.4)}
+.social-btn.yt{background:linear-gradient(135deg,#ff0000,#cc0000);box-shadow:0 8px 24px rgba(255,0,0,.4)}
+.social-btn:hover{transform:translateY(-3px) scale(1.03)}
+.social-btn svg{width:20px;height:20px;position:relative;z-index:2}
+.social-btn span{position:relative;z-index:2}
+
+/* ============ LAYOUT ============ */
+.container{max-width:1400px;margin:0 auto;padding:30px 20px 70px}
+.main-grid{display:grid;grid-template-columns:300px 1fr;gap:26px;align-items:start}
+@media(max-width:1024px){.main-grid{grid-template-columns:1fr}}
+
+/* ============ SIDEBAR ============ */
+.sidebar{position:sticky;top:20px;height:fit-content}
+.cat-nav{background:var(--card);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow)}
+.cat-title{padding:20px 18px;font-size:14px;font-weight:800;background:linear-gradient(135deg,rgba(255,107,157,.12),rgba(196,113,237,.12));border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.cat-title svg{width:19px;height:19px;color:#e0a8ff}
+.search-wrap{padding:12px;border-bottom:1px solid var(--border)}
+.search-wrap input{width:100%;padding:12px 16px;border-radius:12px;border:1px solid var(--border);background:var(--input);color:var(--text);font-size:13.5px;outline:none;transition:var(--t);font-family:inherit}
+.search-wrap input:focus{border-color:var(--a2);box-shadow:0 0 0 3px rgba(196,113,237,.15)}
+.search-wrap input::placeholder{color:var(--muted-2)}
+.cat-list{padding:10px;max-height:62vh;overflow-y:auto}
+.cat-item{padding:12px 16px;border-radius:12px;cursor:pointer;transition:var(--t);display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;font-size:13.5px;font-weight:600;position:relative;overflow:hidden}
+.cat-item::before{content:'';position:absolute;right:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#ff6b9d,#c471ed,#22d3ee);transform:scaleY(0);transition:transform var(--t);transform-origin:top}
+.cat-item:hover{background:rgba(255,255,255,.04)}
+.cat-item.active{background:linear-gradient(135deg,rgba(255,107,157,.15),rgba(196,113,237,.15));color:#fff}
+.cat-item.active::before{transform:scaleY(1)}
+.cat-item .cnt{font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(255,255,255,.06);color:var(--muted);font-weight:700}
+.cat-item.active .cnt{background:linear-gradient(135deg,#ff6b9d,#c471ed);color:#fff}
+.cat-item.gen-item{background:linear-gradient(135deg,rgba(34,211,238,.12),rgba(124,108,240,.12));border:1px solid rgba(34,211,238,.25)}
+.cat-item.gen-item:hover{background:linear-gradient(135deg,rgba(34,211,238,.2),rgba(124,108,240,.2))}
+.cat-item.gen-item.active{background:linear-gradient(135deg,#22d3ee,#7c6cf0);border-color:transparent}
+.cat-item.gen-item.active .cnt{background:rgba(255,255,255,.22)}
+.cat-item.gen-item.active::before{display:none}
+
+/* ============ MAIN ============ */
+.encoder-box{background:var(--card);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--border);border-radius:var(--r-lg);padding:30px;margin-bottom:26px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.encoder-box::before{content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(196,113,237,.08),transparent 30%);animation:spin 20s linear infinite;pointer-events:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sec-head{display:flex;align-items:center;gap:16px;margin-bottom:26px;padding-bottom:20px;border-bottom:1px solid var(--border);flex-wrap:wrap;position:relative;z-index:2}
+.sec-icon{width:52px;height:52px;border-radius:15px;flex-shrink:0;background:linear-gradient(135deg,#ff6b9d,#c471ed,#7c6cf0);background-size:200% 200%;animation:rgbFlow 6s linear infinite;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(196,113,237,.4)}
+.sec-icon svg{width:26px;height:26px;color:#fff}
+.sec-info h2{font-size:19px;font-weight:800;margin-bottom:3px}
+.sec-info p{font-size:13px;color:var(--muted)}
+.diff{padding:5px 13px;border-radius:20px;font-size:11px;font-weight:700;margin-right:auto;letter-spacing:.03em;text-transform:uppercase}
+.diff.easy{background:rgba(34,197,94,.14);color:#4ade80;border:1px solid rgba(34,197,94,.25)}
+.diff.medium{background:rgba(245,158,11,.14);color:#fbbf24;border:1px solid rgba(245,158,11,.25)}
+.diff.hard{background:rgba(244,63,94,.14);color:#fb7185;border:1px solid rgba(244,63,94,.25)}
+.methods{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:26px;position:relative;z-index:2}
+.method-btn{padding:13px 14px;border:1.5px solid var(--border);background:var(--input);color:var(--text-2);border-radius:14px;cursor:pointer;transition:var(--t);font-size:13px;font-weight:600;text-align:center;font-family:inherit;position:relative;overflow:hidden}
+.method-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#ff6b9d,#c471ed,#7c6cf0);opacity:0;transition:opacity var(--t)}
+.method-btn:hover{border-color:var(--a2);color:var(--text);transform:translateY(-2px)}
+.method-btn.active{border-color:transparent;color:#fff;box-shadow:0 10px 26px rgba(196,113,237,.4);transform:translateY(-2px)}
+.method-btn.active::before{opacity:1}
+.method-btn span{position:relative;z-index:2}
+.text-areas{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px;position:relative;z-index:2}
+@media(max-width:768px){.text-areas{grid-template-columns:1fr}}
+.ta-wrap{background:var(--input);border:1.5px solid var(--border);border-radius:var(--r-md);overflow:hidden;transition:var(--t)}
+.ta-wrap:focus-within{border-color:var(--a2);box-shadow:0 0 0 4px rgba(196,113,237,.12)}
+.ta-head{padding:13px 18px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.ta-title{font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px}
+.ta-title svg{width:16px;height:16px;color:#e0a8ff}
+.char-cnt{font-size:11px;color:var(--muted);font-weight:600}
+textarea{width:100%;min-height:220px;padding:18px;border:none;background:transparent;color:var(--text);font-family:'Consolas','Monaco',monospace;font-size:13.5px;resize:vertical;line-height:1.7;outline:none;direction:ltr;text-align:left}
+textarea::placeholder{color:var(--muted-2)}
+.actions{display:flex;justify-content:center;gap:11px;flex-wrap:wrap;position:relative;z-index:2}
+.act-btn{padding:14px 26px;border:none;border-radius:14px;cursor:pointer;font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:9px;transition:transform var(--spring),box-shadow var(--t);font-family:inherit;position:relative;overflow:hidden}
+.act-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transform:translateX(-100%);transition:transform .6s}
+.act-btn:hover::before{transform:translateX(100%)}
+.act-btn svg{width:18px;height:18px;position:relative;z-index:2}
+.act-btn span{position:relative;z-index:2}
+.act-btn:active{transform:scale(.96)}
+.act-btn.primary{background:linear-gradient(135deg,#ff6b9d,#c471ed,#7c6cf0);background-size:200% 200%;animation:rgbFlow 8s linear infinite;color:#fff;box-shadow:0 8px 26px rgba(196,113,237,.4)}
+.act-btn.primary:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(196,113,237,.55)}
+.act-btn.success{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 8px 26px rgba(16,185,129,.35)}
+.act-btn.success:hover{transform:translateY(-3px)}
+.act-btn.secondary{background:rgba(255,255,255,.05);color:var(--text);border:1.5px solid var(--border)}
+.act-btn.secondary:hover{border-color:var(--a2);transform:translateY(-3px);background:rgba(196,113,237,.1)}
+.act-btn.danger{background:rgba(244,63,94,.12);color:#fb7185;border:1.5px solid rgba(244,63,94,.25)}
+.act-btn.danger:hover{background:rgba(244,63,94,.22);transform:translateY(-3px)}
+
+/* ============ GENERATOR ============ */
+.gen-section{display:none}
+.gen-section.active{display:block}
+.gen-field{margin-bottom:16px;position:relative;z-index:2}
+.gen-label{display:block;color:var(--text);font-weight:700;font-size:14px;margin-bottom:8px;align-items:center;gap:8px}
+.gen-label .pcount{font-size:11px;color:var(--muted);font-weight:600;background:rgba(255,255,255,.05);padding:3px 10px;border-radius:20px;margin-right:8px}
+.gen-textarea,
+.gen-input{
+  width:100%;
+  padding:14px 16px;
+  border-radius:14px;
+  border:1.5px solid var(--border);
+  background:var(--input);
+  color:var(--text);
+  font-family:'Consolas','Monaco',monospace;
+  font-size:14px;
+  outline:none;
+  transition:var(--t);
+  direction:ltr;
+  text-align:left;
+}
+.gen-textarea{resize:vertical;line-height:1.7;min-height:130px}
+.gen-input{height:auto}
+.gen-textarea:focus,.gen-input:focus{border-color:var(--a2);box-shadow:0 0 0 4px rgba(196,113,237,.14)}
+.gen-textarea::placeholder,.gen-input::placeholder{color:var(--muted-2);direction:ltr;text-align:left}
+.gen-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0;position:relative;z-index:2}
+@media(max-width:520px){.gen-buttons{grid-template-columns:1fr}}
+.gen-btn{padding:14px;border:none;border-radius:14px;font-weight:800;font-size:14px;cursor:pointer;transition:transform var(--spring),box-shadow var(--t);font-family:inherit;color:#fff;display:flex;align-items:center;justify-content:center;gap:9px;position:relative;overflow:hidden}
+.gen-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transform:translateX(-100%);transition:transform .6s}
+.gen-btn:hover::before{transform:translateX(100%)}
+.gen-btn svg{width:18px;height:18px;position:relative;z-index:2}
+.gen-btn span{position:relative;z-index:2}
+.gen-btn:active{transform:scale(.96)}
+.gen-btn.add{background:linear-gradient(135deg,#ff6b9d,#c471ed);box-shadow:0 8px 22px rgba(196,113,237,.4)}
+.gen-btn.add:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(196,113,237,.55)}
+.gen-btn.del{background:linear-gradient(135deg,#f43f5e,#dc2626);box-shadow:0 8px 22px rgba(244,63,94,.4)}
+.gen-btn.del:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(244,63,94,.55)}
+.gen-btn.copy{background:linear-gradient(135deg,#22d3ee,#7c6cf0);box-shadow:0 8px 22px rgba(34,211,238,.4)}
+.gen-btn.copy:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(34,211,238,.55)}
+.gen-result{min-height:180px;background:#070a15;border-color:rgba(34,211,238,.25);white-space:pre;overflow-x:auto}
+.gen-result:focus{box-shadow:0 0 0 4px rgba(34,211,238,.12)}
+.gen-hint{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.6;text-align:right}
+
+/* ============ INFO CARDS ============ */
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;margin-top:26px}
+.info-card{background:var(--card);backdrop-filter:blur(18px);border:1px solid var(--border);border-radius:var(--r-md);padding:22px;transition:var(--t);position:relative;overflow:hidden}
+.info-card::before{content:'';position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle,rgba(196,113,237,.2),transparent 70%);transition:var(--t)}
+.info-card:hover{border-color:var(--border-2);transform:translateY(-5px);box-shadow:0 14px 40px rgba(196,113,237,.2)}
+.info-card:hover::before{width:200px;height:200px}
+.info-card h4{color:#e0a8ff;margin-bottom:10px;font-size:15px;display:flex;align-items:center;gap:9px;position:relative;z-index:2}
+.info-card h4 svg{width:19px;height:19px}
+.info-card p{color:var(--text-2);font-size:13px;position:relative;z-index:2;line-height:1.7}
+
+/* ============ FOOTER ============ */
+.footer{text-align:center;padding:44px 20px;border-top:1px solid var(--border);background:linear-gradient(180deg,transparent,rgba(196,113,237,.04));margin-top:60px;position:relative}
+.foot-brand{font-size:24px;font-weight:900;margin-bottom:22px;display:inline-block;letter-spacing:-.02em;filter:drop-shadow(0 0 20px rgba(196,113,237,.4))}
+.foot-links{display:flex;justify-content:center;gap:24px;margin-bottom:18px;flex-wrap:wrap}
+.foot-link{color:var(--text-2);text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:var(--t);font-size:13.5px;font-weight:600;padding:8px 16px;border-radius:var(--r-full);border:1px solid transparent}
+.foot-link:hover{color:#fff;border-color:var(--border);background:rgba(255,255,255,.03)}
+.foot-link svg{width:18px;height:18px}
+.copy{color:var(--muted-2);font-size:12px}
+
+/* ============ TOAST ============ */
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(120px);padding:15px 26px;border-radius:16px;color:#fff;font-weight:700;font-size:13.5px;opacity:0;transition:transform .45s var(--spring),opacity .3s;z-index:10000;display:flex;align-items:center;gap:11px;box-shadow:0 14px 40px rgba(0,0,0,.45);pointer-events:none;font-family:inherit}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.success{background:linear-gradient(135deg,#10b981,#059669)}
+.toast.error{background:linear-gradient(135deg,#f43f5e,#dc2626)}
+.toast.info{background:linear-gradient(135deg,#c471ed,#7c6cf0)}
+.toast svg{width:19px;height:19px}
+
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#ff6b9d,#c471ed,#7c6cf0);border-radius:4px}
+::selection{background:rgba(196,113,237,.4);color:#fff}
+
+.mob-btn{display:none;width:100%;padding:14px;background:var(--card);border:1px solid var(--border);border-radius:14px;color:var(--text);cursor:pointer;font-weight:700;margin-bottom:18px;align-items:center;justify-content:center;gap:10px;font-family:inherit;font-size:13.5px}
+.mob-btn svg{width:18px;height:18px}
+@media(max-width:1024px){
+  .mob-btn{display:flex}
+  .sidebar{position:fixed;top:0;right:0;width:300px;height:100vh;z-index:1000;padding:18px;background:var(--bg);overflow-y:auto;transform:translateX(100%);transition:transform var(--t);border-left:1px solid var(--border)}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999}
+  .sidebar-overlay.open{display:block}
+  .close-sb{display:flex!important;position:absolute;top:14px;left:14px;padding:8px 11px;background:rgba(255,255,255,.06);border:none;border-radius:10px;color:var(--text);cursor:pointer}
+}
+.close-sb{display:none;align-items:center;justify-content:center}
+.close-sb svg{width:18px;height:18px}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.float-anim{animation:floatY 4s ease-in-out infinite}
+</style>
+</head>
+<body>
+
+<div class="install-bar" id="installBar">
+  <div class="ib-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg></div>
+  <div class="ib-body">
+    <div class="ib-title">ثبّت التطبيق</div>
+    <div class="ib-desc">استخدم الأداة كتطبيق على جهازك</div>
+  </div>
+  <button id="installBtn">تثبيت</button>
+  <button class="ib-close" id="installClose">×</button>
+</div>
+
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="gate-icon float-anim">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h1 class="logo-main rgb-text">WIN ENCRYPTION VIP</h1>
+    <p class="gate-sub">اشترك في القناتين للدخول إلى الأداة</p>
+    <div class="gate-steps">
+      <a href="https://www.youtube.com/@a9-win" target="_blank" rel="noopener" class="gate-step" id="stepYt">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">قناة اليوتيوب</div>
+          <div class="step-desc">@a9-win</div>
+        </div>
+        <div class="step-icon yt"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.5 15.6V8.4L15.8 12l-6.3 3.6z"/></svg></div>
+      </a>
+      <a href="https://t.me/yyf_r" target="_blank" rel="noopener" class="gate-step" id="stepTg">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">حساب التيليجرام</div>
+          <div class="step-desc">@yyf_r</div>
+        </div>
+        <div class="step-icon tg"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.9 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.1 0zm5 7.2c.1 0 .3 0 .5.2a.5.5 0 0 1 .2.3c0 .1 0 .3 0 .5-.2 1.9-1 6.5-1.4 8.6-.2.9-.5 1.2-.8 1.2-.7.1-1.2-.5-1.9-.9-1.1-.7-1.7-1.1-2.7-1.8-1.2-.8-.4-1.2.3-1.9.2-.2 3.2-3 3.3-3.2 0 0 0-.2-.1-.2s-.2 0-.2 0c-.1 0-1.8 1.1-5.1 3.3-.5.3-.9.5-1.3.5-.4 0-1.3-.2-1.9-.4-.7-.2-1.3-.4-1.3-.8 0-.2.3-.4.9-.7 3.5-1.5 5.8-2.5 7-3 3.3-1.4 4-1.6 4.5-1.6z"/></svg></div>
+      </a>
+    </div>
+    <button class="gate-btn" id="gateBtn" disabled>اضغط للدخول</button>
+    <p class="gate-note">بعد الاشتراك في القناتين، اضغط الزر</p>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+
+<header class="header">
+  <h1 class="logo-main rgb-text">WIN ENCRYPTION VIP</h1>
+  <p class="tagline">أداة التشفير الأكثر شمولاً واحترافية</p>
+  <div class="stats">
+    <div class="stat-item"><div class="stat-num rgb-text">40+</div><div class="stat-lbl">نوع تشفير</div></div>
+    <div class="stat-item"><div class="stat-num rgb-text">9</div><div class="stat-lbl">أقسام</div></div>
+    <div class="stat-item"><div class="stat-num rgb-text">∞</div><div class="stat-lbl">مجاني</div></div>
+  </div>
+  <div class="social-btns">
+    <a href="https://t.me/yyf_r" target="_blank" rel="noopener" class="social-btn tg">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.9 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.1 0zm5 7.2c.1 0 .3 0 .5.2a.5.5 0 0 1 .2.3c0 .1 0 .3 0 .5-.2 1.9-1 6.5-1.4 8.6-.2.9-.5 1.2-.8 1.2-.7.1-1.2-.5-1.9-.9-1.1-.7-1.7-1.1-2.7-1.8-1.2-.8-.4-1.2.3-1.9.2-.2 3.2-3 3.3-3.2 0 0 0-.2-.1-.2s-.2 0-.2 0c-.1 0-1.8 1.1-5.1 3.3-.5.3-.9.5-1.3.5-.4 0-1.3-.2-1.9-.4-.7-.2-1.3-.4-1.3-.8 0-.2.3-.4.9-.7 3.5-1.5 5.8-2.5 7-3 3.3-1.4 4-1.6 4.5-1.6z"/></svg>
+      <span>Telegram</span>
+    </a>
+    <a href="https://www.youtube.com/@a9-win" target="_blank" rel="noopener" class="social-btn yt">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.5 15.6V8.4L15.8 12l-6.3 3.6z"/></svg>
+      <span>YouTube</span>
+    </a>
+  </div>
+</header>
+
+<div class="container">
+  <button class="mob-btn" id="mobBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    اختر قسم الأداة
+  </button>
+
+  <div class="sidebar-overlay" id="sbOverlay"></div>
+
+  <div class="main-grid">
+    <aside class="sidebar" id="sidebar">
+      <button class="close-sb" id="closeSb">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <nav class="cat-nav">
+        <div class="cat-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          أقسام الأداة
+        </div>
+        <div class="search-wrap">
+          <input type="text" id="searchInput" placeholder="ابحث عن تشفير...">
+        </div>
+        <div class="cat-list" id="catList">
+          <div class="cat-item active" data-cat="basic"><span>🟢 أساسية</span><span class="cnt">8</span></div>
+          <div class="cat-item" data-cat="advanced"><span>🟡 متوسطة</span><span class="cnt">7</span></div>
+          <div class="cat-item" data-cat="complex"><span>🔴 متقدمة</span><span class="cnt">6</span></div>
+          <div class="cat-item" data-cat="hash"><span>🔒 Hash</span><span class="cnt">1</span></div>
+          <div class="cat-item" data-cat="web"><span>🌐 ويب</span><span class="cnt">5</span></div>
+          <div class="cat-item" data-cat="programming"><span>💻 لغات البرمجة</span><span class="cnt">8</span></div>
+          <div class="cat-item" data-cat="classic"><span>📜 كلاسيكية</span><span class="cnt">6</span></div>
+          <div class="cat-item" data-cat="special"><span>⚡ خاصة</span><span class="cnt">6</span></div>
+          <div class="cat-item gen-item" data-cat="generator"><span>🔧 مولّد الأوامر</span><span class="cnt">جديد</span></div>
+        </div>
+      </nav>
+    </aside>
+
+    <main>
+      <section class="encoder-box" id="encoderSection">
+        <div class="sec-head">
+          <div class="sec-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div class="sec-info">
+            <h2 id="secTitle">تشفيرات أساسية</h2>
+            <p id="secDesc">تشفيرات بسيطة وسريعة للاستخدام اليومي</p>
+          </div>
+          <span class="diff easy" id="secDiff">سهل</span>
+        </div>
+
+        <div class="methods" id="methodsGrid"></div>
+
+        <div class="text-areas">
+          <div class="ta-wrap">
+            <div class="ta-head">
+              <span class="ta-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                النص الأصلي
+              </span>
+              <span class="char-cnt" id="inCnt">0 حرف</span>
+            </div>
+            <textarea id="inText" placeholder="أدخل النص هنا..."></textarea>
+          </div>
+          <div class="ta-wrap">
+            <div class="ta-head">
+              <span class="ta-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                النتيجة
+              </span>
+              <span class="char-cnt" id="outCnt">0 حرف</span>
+            </div>
+            <textarea id="outText" readonly placeholder="ستظهر النتيجة هنا..."></textarea>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="act-btn primary" id="encBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>تشفير</span>
+          </button>
+          <button class="act-btn primary" id="decBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+            <span>فك التشفير</span>
+          </button>
+          <button class="act-btn success" id="copyBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span>نسخ</span>
+          </button>
+          <button class="act-btn secondary" id="swapBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+            <span>تبديل</span>
+          </button>
+          <button class="act-btn danger" id="clearBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            <span>مسح</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="encoder-box gen-section" id="genSection">
+        <div class="sec-head">
+          <div class="sec-icon" style="background:linear-gradient(135deg,#22d3ee,#7c6cf0);background-size:200% 200%;animation:rgbFlow 6s linear infinite">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <div class="sec-info">
+            <h2>مولّد الأوامر</h2>
+            <p>ركّب أي أمر من بداية + أوفستات + نهاية — بدون قيود</p>
+          </div>
+          <span class="diff easy">مولّد</span>
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">الأوفستات: <span class="pcount" id="offCount">0 سطر</span></label>
+          <textarea class="gen-textarea" id="genOffsets" dir="ltr" placeholder="0x3813c68&#10;0x3813c68&#10;0x3813c68" spellcheck="false"></textarea>
+          <div class="gen-hint">اكتب أوفست واحد في كل سطر — مهما كان العدد</div>
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">البداية:</label>
+          <input type="text" class="gen-input" id="genStart" dir="ltr" placeholder='MemoryPatch::createWithHex("libanogs.so",' spellcheck="false">
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">النهاية:</label>
+          <input type="text" class="gen-input" id="genEnd" dir="ltr" placeholder=',"20 00 80 D2 C0 03 5F D6").Modify();' spellcheck="false">
+        </div>
+
+        <div class="gen-buttons">
+          <button class="gen-btn add" id="genAdd">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>إضافة</span>
+          </button>
+          <button class="gen-btn del" id="genDel">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            <span>حذف</span>
+          </button>
+          <button class="gen-btn copy" id="genCopy">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span>نسخ</span>
+          </button>
+        </div>
+
+        <div class="gen-field">
+          <label class="gen-label">النتيجة: <span class="pcount" id="resCount">0 سطر</span></label>
+          <textarea class="gen-textarea gen-result" id="genResult" dir="ltr" readonly placeholder="ستظهر النتيجة هنا..." spellcheck="false"></textarea>
+        </div>
+      </section>
+
+      <div class="info-grid">
+        <div class="info-card">
+          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> آمن 100%</h4>
+          <p>جميع العمليات تتم محلياً في متصفحك، بدون إرسال أي بيانات لأي خادم</p>
+        </div>
+        <div class="info-card">
+          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> سريع وفوري</h4>
+          <p>تشفير وفك تشفير فوري بضغطة واحدة مع دعم النصوص الكبيرة</p>
+        </div>
+        <div class="info-card">
+          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg> دعم Unicode</h4>
+          <p>دعم كامل للعربية وجميع اللغات والرموز التعبيرية</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="foot-brand rgb-text">WIN ENCRYPTION VIP</div>
+  <div class="foot-links">
+    <a href="https://t.me/yyf_r" target="_blank" rel="noopener" class="foot-link">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.9 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.1 0z"/></svg>
+      @yyf_r
+    </a>
+    <a href="https://www.youtube.com/@a9-win" target="_blank" rel="noopener" class="foot-link">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.5 15.6V8.4L15.8 12l-6.3 3.6z"/></svg>
+      @a9-win
+    </a>
+  </div>
+  <p class="copy">© 2026 WIN ENCRYPTION VIP - جميع الحقوق محفوظة</p>
+</footer>
+
+</div>
+
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+const SITE_NAME = "WIN ENCRYPTION VIP";
+document.title = SITE_NAME;
+
+const Audio = (() => {
+  let ctx = null, musicStarted = false, masterGain = null;
+  function ensureCtx(){
+    if(!ctx){ try{ ctx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){ ctx = null; } }
+    if(ctx && ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+  function tone(freq, dur, vol, type, when){
+    const c = ensureCtx(); if(!c) return;
+    try{
+      const t0 = c.currentTime + (when || 0);
+      const osc = c.createOscillator(); const g = c.createGain();
+      osc.type = type || 'sine';
+      osc.frequency.setValueAtTime(freq, t0);
+      osc.frequency.exponentialRampToValueAtTime(Math.max(freq*0.6,60), t0 + dur);
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(vol, t0 + 0.008);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      osc.connect(g); g.connect(c.destination);
+      osc.start(t0); osc.stop(t0 + dur + 0.02);
+    }catch(e){}
+  }
+  function pianoNote(freq, startTime, duration, velocity){
+    const c = ctx; if(!c) return;
+    try{
+      const o1 = c.createOscillator(); o1.type='triangle'; o1.frequency.value=freq;
+      const o2 = c.createOscillator(); o2.type='sine'; o2.frequency.value=freq*2;
+      const o3 = c.createOscillator(); o3.type='sine'; o3.frequency.value=freq*3;
+      const g1 = c.createGain(); g1.gain.value=1.0;
+      const g2 = c.createGain(); g2.gain.value=0.32;
+      const g3 = c.createGain(); g3.gain.value=0.10;
+      const env = c.createGain();
+      env.gain.setValueAtTime(0.0001, startTime);
+      env.gain.exponentialRampToValueAtTime(velocity, startTime + 0.010);
+      env.gain.exponentialRampToValueAtTime(velocity*0.35, startTime + 0.35);
+      env.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+      o1.connect(g1).connect(env); o2.connect(g2).connect(env); o3.connect(g3).connect(env);
+      env.connect(masterGain);
+      o1.start(startTime); o1.stop(startTime+duration);
+      o2.start(startTime); o2.stop(startTime+duration);
+      o3.start(startTime); o3.stop(startTime+duration);
+    }catch(e){}
+  }
+  const N = {D2:73.42,A2:110.00,B2:123.47,F2s:92.50,G2:98.00,D3:146.83,A3:220.00,B3:246.94,F3s:185.00,G3:196.00,C5s:554.37,D4:293.66,E4:329.63,F4s:369.99,G4:392.00,A4:440.00,B4:493.88,D5:587.33,E5:659.25,F5s:739.99,G5:783.99,A5:880.00,B5:987.77,D6:1174.66};
+  const prog = [
+    {b:N.D2,a:[N.D4,N.F4s,N.A4,N.D5,N.F5s,N.A5,N.D6]},
+    {b:N.A2,a:[N.A3,N.C5s,N.E4,N.A4,N.C5s,N.E5,N.A5]},
+    {b:N.B2,a:[N.B3,N.D4,N.F4s,N.B4,N.D5,N.F5s,N.B5]},
+    {b:N.F2s,a:[N.F3s,N.A3,N.C5s,N.F4s,N.A4,N.C5s,N.F5s]},
+    {b:N.G2,a:[N.G3,N.B3,N.D4,N.G4,N.B4,N.D5,N.G5]},
+    {b:N.D2,a:[N.D4,N.F4s,N.A4,N.D5,N.F5s,N.A5,N.D6]},
+    {b:N.G2,a:[N.G3,N.B3,N.D4,N.G4,N.B4,N.D5,N.G5]},
+    {b:N.A2,a:[N.A3,N.C5s,N.E4,N.A4,N.C5s,N.E5,N.A5]}
+  ];
+  function playChord(i){
+    const c = ctx; if(!c) return;
+    const ch = prog[i % prog.length];
+    const now = c.currentTime + 0.05;
+    const dur = 3.2, arpDur = 2.4, step = dur / ch.a.length;
+    pianoNote(ch.b*2, now, 3.5, 0.10);
+    ch.a.forEach((f,k) => pianoNote(f, now + k*step, arpDur, 0.055 + Math.sin(k*0.7)*0.015));
+  }
+  return {
+    click(){ tone(720,0.08,0.06,'sine',0); tone(1440,0.06,0.025,'sine',0.01); },
+    tap(){ tone(520,0.07,0.05,'triangle',0); },
+    success(){ tone(660,0.1,0.055,'sine',0); tone(880,0.11,0.05,'sine',0.07); tone(1320,0.13,0.04,'sine',0.14); },
+    error(){ tone(200,0.18,0.055,'sawtooth',0); tone(150,0.22,0.045,'sawtooth',0.05); },
+    startMusic(){
+      if(musicStarted) return;
+      const c = ensureCtx(); if(!c) return;
+      musicStarted = true;
+      masterGain = c.createGain();
+      masterGain.gain.value = 0;
+      masterGain.connect(c.destination);
+      masterGain.gain.linearRampToValueAtTime(0.42, c.currentTime + 5);
+      let i = 0; playChord(i++);
+      setInterval(() => { playChord(i++); }, 3200);
+    }
+  };
+})();
+
+let deferredPrompt = null;
+const installBar = document.getElementById('installBar');
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault(); deferredPrompt = e;
+  if(!sessionStorage.getItem('installDismissed')) installBar.classList.add('show');
+});
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if(!deferredPrompt) return;
+  Audio.click(); deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if(outcome === 'accepted') installBar.classList.remove('show');
+  deferredPrompt = null;
+});
+document.getElementById('installClose').addEventListener('click', () => {
+  Audio.tap(); installBar.classList.remove('show');
+  sessionStorage.setItem('installDismissed','1');
+});
+if('serviceWorker' in navigator){
+  try{
+    const sw = `self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>self.clients.claim());self.addEventListener('fetch',e=>{e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)))});`;
+    navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).catch(()=>{});
+  }catch(e){}
+}
+
+(function(){
+  const gate = document.getElementById('gate');
+  const app = document.getElementById('app');
+  const sYt = document.getElementById('stepYt');
+  const sTg = document.getElementById('stepTg');
+  const gBtn = document.getElementById('gateBtn');
+  let y=false, t=false;
+  if(sessionStorage.getItem('wev_gate') === '1'){
+    gate.remove(); app.style.display = 'block';
+    setTimeout(() => Audio.startMusic(), 400);
+    return;
+  }
+  function chk(){ if(y && t){ gBtn.disabled = false; gBtn.classList.add('active'); } }
+  sYt.addEventListener('click', () => { y=true; sYt.classList.add('done'); Audio.click(); chk(); });
+  sTg.addEventListener('click', () => { t=true; sTg.classList.add('done'); Audio.click(); chk(); });
+  gBtn.addEventListener('click', () => {
+    Audio.click(); sessionStorage.setItem('wev_gate','1');
+    gate.classList.add('hide'); Audio.startMusic();
+    setTimeout(() => { gate.remove(); app.style.display = 'block'; }, 560);
+  });
+})();
+
+document.addEventListener('pointerdown', e => {
+  const b = e.target.closest('button, .btn, .tab, .method-btn, .act-btn, .cat-item, .social-btn, .foot-link, .gen-btn, label, a');
+  if(b) Audio.tap();
+}, { passive: true });
+
+const toast = document.getElementById('toast');
+const toastMsg = document.getElementById('toastMsg');
+function showToast(msg, type='success'){
+  toast.className = 'toast ' + type + ' show';
+  toastMsg.textContent = msg;
+  if(type === 'success') Audio.success();
+  else if(type === 'error') Audio.error();
+  else Audio.click();
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => toast.classList.remove('show'), 2400);
+}
+
+const sb = document.getElementById('sidebar');
+const sbOv = document.getElementById('sbOverlay');
+document.getElementById('mobBtn').addEventListener('click', ()=>{ sb.classList.add('open'); sbOv.classList.add('open'); });
+document.getElementById('closeSb').addEventListener('click', ()=>{ sb.classList.remove('open'); sbOv.classList.remove('open'); });
+sbOv.addEventListener('click', ()=>{ sb.classList.remove('open'); sbOv.classList.remove('open'); });
+
+const categories = {
+  basic:{name:'تشفيرات أساسية',desc:'تشفيرات بسيطة وسريعة للاستخدام اليومي',difficulty:'easy',diffText:'سهل',
+    methods:['base64','base32','hex','binary','octal','decimal','reverse','uppercase']},
+  advanced:{name:'تشفيرات متوسطة',desc:'تشفيرات بمستوى متوسط من التعقيد',difficulty:'medium',diffText:'متوسط',
+    methods:['unicode','url','html','ascii','rot13','rot47','atbash']},
+  complex:{name:'تشفيرات متقدمة',desc:'تشفيرات معقدة للاستخدامات المتخصصة',difficulty:'hard',diffText:'صعب',
+    methods:['base58','base85','uuencode','xxencode','quotedPrintable','punycode']},
+  hash:{name:'دوال Hash',desc:'دوال البصمة الرقمية',difficulty:'hard',diffText:'صعب',methods:['crc32']},
+  web:{name:'تشفيرات الويب',desc:'تشفيرات خاصة بتقنيات الويب',difficulty:'medium',diffText:'متوسط',
+    methods:['jwt','urlSafe64','dataUri','mimeEncode','percentEncode']},
+  programming:{name:'لغات البرمجة',desc:'تشفيرات خاصة بلغات البرمجة',difficulty:'medium',diffText:'متوسط',
+    methods:['jsEscape','jsonEncode','phpSerialize','pythonRepr','cString','sqlEscape','xmlEncode','cssEscape']},
+  classic:{name:'تشفيرات كلاسيكية',desc:'تشفيرات تاريخية وكلاسيكية',difficulty:'easy',diffText:'سهل',
+    methods:['caesar','vigenere','morse','pigLatin','railFence','playfair']},
+  special:{name:'تشفيرات خاصة',desc:'تشفيرات مميزة ومبتكرة',difficulty:'medium',diffText:'متوسط',
+    methods:['leetSpeak','zeroWidth','braille','nato','tap','bacon']}
+};
+const methodNames = {base64:'Base64',base32:'Base32',hex:'Hexadecimal',binary:'Binary',octal:'Octal',decimal:'Decimal',reverse:'عكس النص',uppercase:'UPPERCASE',unicode:'Unicode',url:'URL Encode',html:'HTML Entities',ascii:'ASCII',rot13:'ROT13',rot47:'ROT47',atbash:'Atbash',base58:'Base58',base85:'Base85',uuencode:'UUEncode',xxencode:'XXEncode',quotedPrintable:'Quoted-Printable',punycode:'Punycode',crc32:'CRC32',jwt:'JWT Decode',urlSafe64:'URL-Safe Base64',dataUri:'Data URI',mimeEncode:'MIME',percentEncode:'Percent',jsEscape:'JS Escape',jsonEncode:'JSON',phpSerialize:'PHP Serialize',pythonRepr:'Python Repr',cString:'C String',sqlEscape:'SQL Escape',xmlEncode:'XML Encode',cssEscape:'CSS Escape',caesar:'Caesar +3',vigenere:'Vigenère',morse:'Morse Code',pigLatin:'Pig Latin',railFence:'Rail Fence',playfair:'Playfair',leetSpeak:'L33T Speak',zeroWidth:'Zero-Width',braille:'Braille',nato:'NATO',tap:'Tap Code',bacon:'Bacon Cipher'};
+
+let currentMethod = 'base64';
+let currentCategory = 'basic';
+
+document.querySelectorAll('.cat-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.cat-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    currentCategory = item.dataset.cat;
+    updateCategoryUI();
+    sb.classList.remove('open'); sbOv.classList.remove('open');
+  });
+});
+
+function updateCategoryUI(){
+  const enc = document.getElementById('encoderSection');
+  const gen = document.getElementById('genSection');
+  if(currentCategory === 'generator'){ enc.style.display='none'; gen.classList.add('active'); return; }
+  enc.style.display='block'; gen.classList.remove('active');
+  const c = categories[currentCategory];
+  document.getElementById('secTitle').textContent = c.name;
+  document.getElementById('secDesc').textContent = c.desc;
+  const d = document.getElementById('secDiff');
+  d.className = 'diff ' + c.difficulty; d.textContent = c.diffText;
+  const grid = document.getElementById('methodsGrid');
+  grid.innerHTML = c.methods.map((m,i) => `<button class="method-btn ${i===0?'active':''}" data-m="${m}"><span>${methodNames[m]||m}</span></button>`).join('');
+  currentMethod = c.methods[0];
+  bindMethods();
+}
+function bindMethods(){
+  document.querySelectorAll('#methodsGrid .method-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#methodsGrid .method-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active'); currentMethod = btn.dataset.m;
+    });
+  });
+}
+
+const inText = document.getElementById('inText');
+const outText = document.getElementById('outText');
+inText.addEventListener('input', () => { document.getElementById('inCnt').textContent = inText.value.length + ' حرف'; });
+
+const morseCode = {'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....','I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..','0':'-----','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...','8':'---..','9':'----.',' ':'/','.':'.-.-.-',',':'--..--'};
+const revMorse = Object.fromEntries(Object.entries(morseCode).map(([k,v])=>[v,k]));
+const natoA = {'A':'Alpha','B':'Bravo','C':'Charlie','D':'Delta','E':'Echo','F':'Foxtrot','G':'Golf','H':'Hotel','I':'India','J':'Juliet','K':'Kilo','L':'Lima','M':'Mike','N':'November','O':'Oscar','P':'Papa','Q':'Quebec','R':'Romeo','S':'Sierra','T':'Tango','U':'Uniform','V':'Victor','W':'Whiskey','X':'X-ray','Y':'Yankee','Z':'Zulu','0':'Zero','1':'One','2':'Two','3':'Three','4':'Four','5':'Five','6':'Six','7':'Seven','8':'Eight','9':'Nine'};
+const revNato = Object.fromEntries(Object.entries(natoA).map(([k,v])=>[v.toLowerCase(),k]));
+const brailleM = {'a':'⠁','b':'⠃','c':'⠉','d':'⠙','e':'⠑','f':'⠋','g':'⠛','h':'⠓','i':'⠊','j':'⠚','k':'⠅','l':'⠇','m':'⠍','n':'⠝','o':'⠕','p':'⠏','q':'⠟','r':'⠗','s':'⠎','t':'⠞','u':'⠥','v':'⠧','w':'⠺','x':'⠭','y':'⠽','z':'⠵',' ':' '};
+const revBraille = Object.fromEntries(Object.entries(brailleM).map(([k,v])=>[v,k]));
+const leetM = {'a':'4','b':'8','e':'3','g':'9','i':'1','o':'0','s':'5','t':'7','z':'2'};
+const revLeet = Object.fromEntries(Object.entries(leetM).map(([k,v])=>[v,k]));
+function crc32(s){let c=0xFFFFFFFF;for(let i=0;i<s.length;i++){c^=s.charCodeAt(i);for(let j=0;j<8;j++)c=(c>>>1)^(c&1?0xEDB88320:0);}return((c^0xFFFFFFFF)>>>0).toString(16).toUpperCase().padStart(8,'0');}
+
+const encoders = {
+  base64:s=>btoa(unescape(encodeURIComponent(s))),
+  base32:s=>{const a='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';let b='';for(let c of s)b+=c.charCodeAt(0).toString(2).padStart(8,'0');while(b.length%5)b+='0';let r='';for(let i=0;i<b.length;i+=5)r+=a[parseInt(b.substr(i,5),2)];while(r.length%8)r+='=';return r;},
+  hex:s=>Array.from(s).map(c=>c.charCodeAt(0).toString(16).padStart(2,'0')).join(' '),
+  binary:s=>Array.from(s).map(c=>c.charCodeAt(0).toString(2).padStart(8,'0')).join(' '),
+  octal:s=>Array.from(s).map(c=>c.charCodeAt(0).toString(8).padStart(3,'0')).join(' '),
+  decimal:s=>Array.from(s).map(c=>c.charCodeAt(0)).join(' '),
+  reverse:s=>Array.from(s).reverse().join(''),
+  uppercase:s=>s.toUpperCase(),
+  unicode:s=>Array.from(s).map(c=>'\\u'+c.charCodeAt(0).toString(16).padStart(4,'0')).join(''),
+  url:s=>encodeURIComponent(s),
+  html:s=>s.replace(/[<>&"']/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c])),
+  ascii:s=>Array.from(s).map(c=>`&#${c.charCodeAt(0)};`).join(''),
+  rot13:s=>s.replace(/[a-zA-Z]/g,c=>String.fromCharCode((c<='Z'?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26)),
+  rot47:s=>s.replace(/[!-~]/g,c=>String.fromCharCode(33+((c.charCodeAt(0)-33+47)%94))),
+  atbash:s=>s.replace(/[a-zA-Z]/g,c=>{const b=c<='Z'?65:97;return String.fromCharCode(b+(25-(c.charCodeAt(0)-b)));}),
+  base58:s=>{const a='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';let bytes=new TextEncoder().encode(s);let r='';let n=BigInt('0x'+Array.from(bytes).map(b=>b.toString(16).padStart(2,'0')).join(''));while(n>0n){r=a[Number(n%58n)]+r;n=n/58n;}return r||'1';},
+  base85:s=>`<~${btoa(unescape(encodeURIComponent(s)))}~>`,
+  uuencode:s=>`begin 644 data\n${btoa(unescape(encodeURIComponent(s)))}\nend`,
+  xxencode:s=>btoa(unescape(encodeURIComponent(s))).replace(/[A-Za-z0-9+/=]/g,c=>{const i='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='.indexOf(c);return '+-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'[i]||c;}),
+  quotedPrintable:s=>s.replace(/[^\x20-\x7E]/g,c=>'='+c.charCodeAt(0).toString(16).toUpperCase().padStart(2,'0')),
+  punycode:s=>{try{return new URL('http://'+s).hostname;}catch{return 'xn--'+btoa(s).replace(/=/g,'');}},
+  crc32:crc32, jwt:s=>s,
+  urlSafe64:s=>btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
+  dataUri:s=>`data:text/plain;base64,${btoa(unescape(encodeURIComponent(s)))}`,
+  mimeEncode:s=>`=?UTF-8?B?${btoa(unescape(encodeURIComponent(s)))}?=`,
+  percentEncode:s=>Array.from(s).map(c=>'%'+c.charCodeAt(0).toString(16).toUpperCase().padStart(2,'0')).join(''),
+  jsEscape:s=>s.replace(/[\\"']/g,'\\$&').replace(/\n/g,'\\n').replace(/\r/g,'\\r').replace(/\t/g,'\\t'),
+  jsonEncode:s=>JSON.stringify(s),
+  phpSerialize:s=>`s:${s.length}:"${s}";`,
+  pythonRepr:s=>`'${s.replace(/'/g,"\\'")}'`,
+  cString:s=>`"${s.replace(/[\\"]/g,'\\$&').replace(/\n/g,'\\n')}"`,
+  sqlEscape:s=>`'${s.replace(/'/g,"''")}'`,
+  xmlEncode:s=>s.replace(/[<>&"']/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&apos;'}[c])),
+  cssEscape:s=>s.replace(/[^a-zA-Z0-9]/g,c=>'\\'+c.charCodeAt(0).toString(16)+' '),
+  caesar:s=>s.replace(/[a-zA-Z]/g,c=>String.fromCharCode(((c.charCodeAt(0)-(c<='Z'?65:97)+3)%26)+(c<='Z'?65:97))),
+  vigenere:s=>{const k='KEY';return s.replace(/[a-zA-Z]/g,(c,i)=>{const b=c<='Z'?65:97;const sh=k[i%k.length].toUpperCase().charCodeAt(0)-65;return String.fromCharCode(((c.charCodeAt(0)-b+sh)%26)+b);});},
+  morse:s=>s.toUpperCase().split('').map(c=>morseCode[c]||c).join(' '),
+  pigLatin:s=>s.split(' ').map(w=>{if(/^[aeiou]/i.test(w))return w+'way';return w.replace(/^([^aeiou]+)/i,'')+w.match(/^[^aeiou]+/i)?.[0]+'ay';}).join(' '),
+  railFence:s=>{const r=['','',''];let d=1,x=0;for(let c of s){r[x]+=c;x+=d;if(x===0||x===2)d*=-1;}return r.join('');},
+  playfair:s=>`[Playfair: ${s.toUpperCase().replace(/J/g,'I')}]`,
+  leetSpeak:s=>s.toLowerCase().split('').map(c=>leetM[c]||c).join(''),
+  zeroWidth:s=>Array.from(s).map(c=>c.charCodeAt(0).toString(2).padStart(16,'0').replace(/0/g,'\u200B').replace(/1/g,'\u200C')).join('\u200D'),
+  braille:s=>s.toLowerCase().split('').map(c=>brailleM[c]||c).join(''),
+  nato:s=>s.toUpperCase().split('').map(c=>natoA[c]||c).join(' '),
+  tap:s=>s.toUpperCase().replace(/K/g,'C').split('').map(c=>{if(c>='A'&&c<='Z'){const i=c.charCodeAt(0)-65;return `${Math.floor(i/5)+1}.${(i%5)+1}`;}return c;}).join(' '),
+  bacon:s=>s.toUpperCase().split('').map(c=>{if(c>='A'&&c<='Z'){const i=c.charCodeAt(0)-65;return i.toString(2).padStart(5,'0').replace(/0/g,'A').replace(/1/g,'B');}return c;}).join(' ')
+};
+
+const decoders = {
+  base64:s=>decodeURIComponent(escape(atob(s.trim()))),
+  base32:s=>{const a='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';s=s.replace(/=/g,'').toUpperCase();let b='';for(let c of s)b+=a.indexOf(c).toString(2).padStart(5,'0');let r='';for(let i=0;i+8<=b.length;i+=8)r+=String.fromCharCode(parseInt(b.substr(i,8),2));return r;},
+  hex:s=>s.split(/\s+/).map(h=>String.fromCharCode(parseInt(h,16))).join(''),
+  binary:s=>s.split(/\s+/).map(b=>String.fromCharCode(parseInt(b,2))).join(''),
+  octal:s=>s.split(/\s+/).map(o=>String.fromCharCode(parseInt(o,8))).join(''),
+  decimal:s=>s.split(/\s+/).map(d=>String.fromCharCode(parseInt(d))).join(''),
+  reverse:s=>encoders.reverse(s), uppercase:s=>s.toLowerCase(),
+  unicode:s=>s.replace(/\\u[\dA-Fa-f]{4}/g,m=>String.fromCharCode(parseInt(m.slice(2),16))),
+  url:s=>decodeURIComponent(s),
+  html:s=>s.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;/g,"'"),
+  ascii:s=>s.replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(n)),
+  rot13:s=>encoders.rot13(s),rot47:s=>encoders.rot47(s),atbash:s=>encoders.atbash(s),
+  base58:s=>'[Base58 decode معقد]',
+  base85:s=>{const m=s.match(/<~(.+?)~>/);return m?decodeURIComponent(escape(atob(m[1]))):s;},
+  uuencode:s=>{const l=s.split('\n');return decodeURIComponent(escape(atob(l.slice(1,-1).join(''))));},
+  xxencode:s=>s,
+  quotedPrintable:s=>s.replace(/=([0-9A-F]{2})/gi,(_,h)=>String.fromCharCode(parseInt(h,16))),
+  punycode:s=>s.replace(/^xn--/,''), crc32:s=>'[CRC32 أحادي]',
+  jwt:s=>{try{const p=s.split('.');if(p.length===3){return JSON.stringify({header:JSON.parse(atob(p[0])),payload:JSON.parse(atob(p[1]))},null,2);}return s;}catch{return s;}},
+  urlSafe64:s=>decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/')))),
+  dataUri:s=>{const m=s.match(/data:[^;]+;base64,(.+)/);return m?decodeURIComponent(escape(atob(m[1]))):s;},
+  mimeEncode:s=>{const m=s.match(/=\?UTF-8\?B\?(.+?)\?=/);return m?decodeURIComponent(escape(atob(m[1]))):s;},
+  percentEncode:s=>decodeURIComponent(s),
+  jsEscape:s=>s.replace(/\\n/g,'\n').replace(/\\r/g,'\r').replace(/\\t/g,'\t').replace(/\\(.)/g,'$1'),
+  jsonEncode:s=>{try{return JSON.parse(s);}catch{return s;}},
+  phpSerialize:s=>{const m=s.match(/s:\d+:"(.+)";/);return m?m[1]:s;},
+  pythonRepr:s=>s.replace(/^'|'$/g,'').replace(/\\'/g,"'"),
+  cString:s=>s.replace(/^"|"$/g,'').replace(/\\n/g,'\n').replace(/\\(.)/g,'$1'),
+  sqlEscape:s=>s.replace(/^'|'$/g,'').replace(/''/g,"'"),
+  xmlEncode:s=>s.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&apos;/g,"'"),
+  cssEscape:s=>s.replace(/\\([0-9a-f]+)\s?/gi,(_,h)=>String.fromCharCode(parseInt(h,16))),
+  caesar:s=>s.replace(/[a-zA-Z]/g,c=>String.fromCharCode(((c.charCodeAt(0)-(c<='Z'?65:97)-3+26)%26)+(c<='Z'?65:97))),
+  vigenere:s=>{const k='KEY';return s.replace(/[a-zA-Z]/g,(c,i)=>{const b=c<='Z'?65:97;const sh=k[i%k.length].toUpperCase().charCodeAt(0)-65;return String.fromCharCode(((c.charCodeAt(0)-b-sh+26)%26)+b);});},
+  morse:s=>s.split(' ').map(m=>revMorse[m]||m).join(''),
+  pigLatin:s=>s.split(' ').map(w=>{if(w.endsWith('way'))return w.slice(0,-3);const m=w.match(/(.+?)([^aeiou]+)ay$/i);return m?m[2]+m[1]:w;}).join(' '),
+  railFence:s=>'[معقد]',playfair:s=>'[معقد]',
+  leetSpeak:s=>s.split('').map(c=>revLeet[c]||c).join(''),
+  zeroWidth:s=>s.split('\u200D').map(c=>String.fromCharCode(parseInt(c.replace(/\u200B/g,'0').replace(/\u200C/g,'1'),2))).join(''),
+  braille:s=>s.split('').map(c=>revBraille[c]||c).join(''),
+  nato:s=>s.split(' ').map(w=>revNato[w.toLowerCase()]||w).join(''),
+  tap:s=>s.split(' ').map(code=>{const m=code.match(/(\d)\.(\d)/);if(m)return String.fromCharCode(65+(parseInt(m[1])-1)*5+parseInt(m[2])-1);return code;}).join(''),
+  bacon:s=>s.split(' ').map(code=>{if(/^[AB]{5}$/.test(code)){const n=parseInt(code.replace(/A/g,'0').replace(/B/g,'1'),2);return String.fromCharCode(65+n);}return code;}).join('')
+};
+
+document.getElementById('encBtn').addEventListener('click', ()=>{
+  const v = inText.value;
+  if(!v.trim()){showToast('أدخل نصاً للتشفير','error');return;}
+  try{
+    const r = encoders[currentMethod] ? encoders[currentMethod](v) : null;
+    if(r===null){showToast('طريقة غير مدعومة','error');return;}
+    outText.value = r;
+    document.getElementById('outCnt').textContent = r.length + ' حرف';
+    showToast('تم التشفير بنجاح','success');
+  }catch(e){showToast('خطأ في التشفير','error');}
+});
+document.getElementById('decBtn').addEventListener('click', ()=>{
+  const v = inText.value;
+  if(!v.trim()){showToast('أدخل نصاً لفك التشفير','error');return;}
+  try{
+    const r = decoders[currentMethod] ? decoders[currentMethod](v) : null;
+    if(r===null){showToast('طريقة غير مدعومة','error');return;}
+    outText.value = r;
+    document.getElementById('outCnt').textContent = r.length + ' حرف';
+    showToast('تم فك التشفير بنجاح','success');
+  }catch(e){showToast('خطأ في فك التشفير','error');}
+});
+document.getElementById('copyBtn').addEventListener('click', async ()=>{
+  const v = outText.value;
+  if(!v.trim()){showToast('لا يوجد نص للنسخ','error');return;}
+  try{await navigator.clipboard.writeText(v);showToast('تم النسخ','success');}catch{showToast('فشل النسخ','error');}
+});
+document.getElementById('swapBtn').addEventListener('click', ()=>{
+  const t = inText.value; inText.value = outText.value; outText.value = t;
+  document.getElementById('inCnt').textContent = inText.value.length + ' حرف';
+  document.getElementById('outCnt').textContent = outText.value.length + ' حرف';
+  showToast('تم التبديل','info');
+});
+document.getElementById('clearBtn').addEventListener('click', ()=>{
+  inText.value = ''; outText.value = '';
+  document.getElementById('inCnt').textContent = '0 حرف';
+  document.getElementById('outCnt').textContent = '0 حرف';
+  showToast('تم المسح','info');
+});
+
+const genOffsets = document.getElementById('genOffsets');
+const genStart = document.getElementById('genStart');
+const genEnd = document.getElementById('genEnd');
+const genResult = document.getElementById('genResult');
+const offCount = document.getElementById('offCount');
+const resCount = document.getElementById('resCount');
+
+function updOffCnt(){
+  const lines = genOffsets.value.split('\n').filter(l => l.trim() !== '');
+  offCount.textContent = lines.length + ' سطر';
+}
+genOffsets.addEventListener('input', updOffCnt);
+
+document.getElementById('genAdd').addEventListener('click', () => {
+  const offsets = genOffsets.value.split('\n').map(l => l.trim()).filter(l => l !== '');
+  if(offsets.length === 0){ showToast('أضف أوفست واحد على الأقل', 'error'); return; }
+  const start = genStart.value;
+  const end = genEnd.value;
+  if(!start && !end){ showToast('أدخل البداية أو النهاية على الأقل', 'error'); return; }
+  const result = offsets.map(off => `${start}${off}${end}`).join('\n');
+  genResult.value = result;
+  resCount.textContent = offsets.length + ' سطر';
+  showToast(`تم التوليد — ${offsets.length} سطر`, 'success');
+});
+document.getElementById('genDel').addEventListener('click', () => {
+  genOffsets.value = ''; genStart.value = ''; genEnd.value = ''; genResult.value = '';
+  offCount.textContent = '0 سطر'; resCount.textContent = '0 سطر';
+  showToast('تم الحذف', 'info');
+});
+document.getElementById('genCopy').addEventListener('click', async () => {
+  const v = genResult.value;
+  if(!v.trim()){ showToast('لا يوجد نص للنسخ', 'error'); return; }
+  try{ await navigator.clipboard.writeText(v); showToast('تم نسخ النتيجة', 'success'); }
+  catch{ showToast('فشل النسخ', 'error'); }
+});
+
+document.getElementById('searchInput').addEventListener('input', e=>{
+  const q = e.target.value.toLowerCase();
+  document.querySelectorAll('#methodsGrid .method-btn').forEach(b=>{
+    b.style.display = b.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+
+updateCategoryUI();
+</script>
+</body>
+</html>
